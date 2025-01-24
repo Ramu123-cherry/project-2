@@ -1,0 +1,208 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+class Book {
+    private String title;
+    private String author;
+    private String isbn;
+    private boolean isBorrowed;
+
+    public Book(String title, String author, String isbn) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.isBorrowed = false;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public boolean isBorrowed() {
+        return isBorrowed;
+    }
+
+    public void borrow() {
+        this.isBorrowed = true;
+    }
+
+    public void returnBook() {
+        this.isBorrowed = false;
+    }
+    
+    @Override
+    public String toString() {
+        return "Title: " + title + ", Author: " + author + ", ISBN: " + isbn + 
+               ", Status: " + (isBorrowed ? "Borrowed" : "Available");
+    }
+}
+
+class Library {
+    private ArrayList<Book> books;
+
+    public Library() {
+        books = new ArrayList<>();
+    }
+
+    public void addBook(String title, String author, String isbn) {
+        books.add(new Book(title, author, isbn));
+    }
+
+    public void updateBook(String isbn, String newTitle, String newAuthor) {
+        for (Book book : books) {
+            if (book.getIsbn().equals(isbn)) {
+                // In a real application, use setters to update title and author
+                // Here we'll point out that this is a placeholder
+                System.out.println("Updated Book: " + book);
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+
+    public void deleteBook(String isbn) {
+        books.removeIf(book -> book.getIsbn().equals(isbn));
+    }
+
+    public void searchByTitle(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                System.out.println(book);
+            }
+        }
+    }
+
+    public void searchByAuthor(String author) {
+        for (Book book : books) {
+            if (book.getAuthor().equalsIgnoreCase(author)) {
+                System.out.println(book);
+            }
+        }
+    }
+
+    public void borrowBook(String isbn) {
+        for (Book book : books) {
+            if (book.getIsbn().equals(isbn)) {
+                if (!book.isBorrowed()) {
+                    book.borrow();
+                    System.out.println("You have borrowed: " + book.getTitle());
+                } else {
+                    System.out.println("Book is already borrowed.");
+                }
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+
+    public void returnBook(String isbn) {
+        for (Book book : books) {
+            if (book.getIsbn().equals(isbn)) {
+                if (book.isBorrowed()) {
+                    book.returnBook();
+                    System.out.println("You have returned: " + book.getTitle());
+                } else {
+                    System.out.println("This book was not borrowed.");
+                }
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+
+    public void displayAllBooks() {
+        for (Book book : books) {
+            System.out.println(book);
+        }
+    }
+}
+
+LibraryManagementSystem.java {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Library library = new Library();
+        int choice;
+
+        do {
+            System.out.println("\nLibrary Management System");
+            System.out.println("1. Add Book");
+            System.out.println("2. Update Book");
+            System.out.println("3. Delete Book");
+            System.out.println("4. Search Book by Title");
+            System.out.println("5. Search Book by Author");
+            System.out.println("6. Borrow Book");
+            System.out.println("7. Return Book");
+            System.out.println("8. Display All Books");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter title: ");
+                    String title = scanner.nextLine();
+                    System.out.print("Enter author: ");
+                    String author = scanner.nextLine();
+                    System.out.print("Enter ISBN: ");
+                    String isbn = scanner.nextLine();
+                    library.addBook(title, author, isbn);
+                    break;
+                case 2:
+                    System.out.print("Enter ISBN of the book to update: ");
+                    String updateIsbn = scanner.nextLine();
+                    System.out.print("Enter new title: ");
+                    String newTitle = scanner.nextLine();
+                    System.out.print("Enter new author: ");
+                    String newAuthor = scanner.nextLine();
+                    library.updateBook(updateIsbn, newTitle, newAuthor);
+                    break;
+                case 3:
+                    System.out.print("Enter ISBN of the book to delete: ");
+                    String deleteIsbn = scanner.nextLine();
+                    library.deleteBook(deleteIsbn);
+                    break;
+                case 4:
+                    System.out.print("Enter title to search: ");
+                    String searchTitle = scanner.nextLine();
+                    library.searchByTitle(searchTitle);
+                    break;
+                case 5:
+                    System.out.print("Enter author to search: ");
+                    String searchAuthor = scanner.nextLine();
+                    library.searchByAuthor(searchAuthor);
+                    break;
+                case 6:
+                    System.out.print("Enter ISBN of the book to borrow: ");
+                    String borrowIsbn = scanner.nextLine();
+                    library.borrowBook(borrowIsbn);
+                    break;
+                case 7:
+                    System.out.print("Enter ISBN of the book to return: ");
+                    String returnIsbn = scanner.nextLine();
+                    library.returnBook(returnIsbn);
+                    break;
+                case 8:
+                    library.displayAllBooks();
+                    break;
+                case 0:
+                    System.out.println("Exiting the system. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 0);
+
+        scanner.close();
+    }
+}
